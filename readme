@@ -1,0 +1,11 @@
+Decodes historical ticks data from dukascopy.com.
+
+
+Example
+'''
+(async () => {
+    //13h(1pm) gmt time -> 9am US time
+    let results = await send_HTTP_req("datafeed.dukascopy.com", "datafeed/QQQUSUSD/2022/06/18/13h_ticks.bi5")
+    console.log(results[0])
+})();//for top level
+'''
