@@ -1,4 +1,5 @@
 const https = require('https');
+const { readFileSync } = require('fs');
 //format
 // https://datafeed.dukascopy.com/datafeed/TSLAUSUSD/2022/06/18/15h_ticks.bi5
 
@@ -517,12 +518,11 @@ tM.prototype.decode = function (b, c, d) {
     this.ua = new WL;
     this.ea = va(this.ea, this);
     this.ea();
-    this.wb = 0.01;
     this.rb = 0;
     var j1 = 1
     let results = []
     while (this.rb < this.u.u.length) {
-        let d = [1658149200000 + 1 * Db.yf("i", this.u.u, this.rb + 0), Db.yf("i", this.u.u, this.rb + 8) / 10 * this.wb, Db.yf("i", this.u.u, this.rb + 4) / 10 * this.wb, parseFloat((Db.yf("f", this.u.u, this.rb + 16)[0] * j1).toFixed(4)), parseFloat((Db.yf("f", this.u.u, this.rb + 12)[0] * j1).toFixed(4))]
+        let d = [this.startTime + 1 * Db.yf("i", this.u.u, this.rb + 0), Db.yf("i", this.u.u, this.rb + 8) / 10 * this.wb, Db.yf("i", this.u.u, this.rb + 4) / 10 * this.wb, parseFloat((Db.yf("f", this.u.u, this.rb + 16)[0] * j1).toFixed(4)), parseFloat((Db.yf("f", this.u.u, this.rb + 12)[0] * j1).toFixed(4))]
         this.rb += 20;
         results.push(d)
     }
@@ -617,17 +617,32 @@ function send_HTTP_req(body, type, host, route) { //type = GET, POST
     });
 }
 
-function decodeBinary(sss){
+function decodeBinary(sss, historicalFilename, yyyy, mm, dd, hh) {
+    let meta = JSON.parse(readFileSync("meta.json"))
+    let instruments = meta.instruments
+    let pipValue = 1
+    let keys = Object.keys(instruments)
+    for (let ii = 0; ii < keys.length; ii++) {
+        let k = keys[ii]
+        if (instruments[k]['historical_filename'] === historicalFilename) {
+            pipValue = instruments[k]['pipValue']
+            break;
+        }
+    }
+
+
     let sss1 = Buffer.concat(sss);
-    t1 = new tM
-    t1.a = 0
-    t1.w = 0
 
     b = new Eb
     b.data = Array.from(sss1)
     b.offset = 0
 
     d = new tM;
+    d.wb = pipValue
+    mm = '' + (+(mm) + 1)
+    mm = mm.length == 1 ? '0' + mm : mm
+
+    d.startTime = Date.parse(mm + '/' + dd + '/' + yyyy + ' ' + hh + ':00:00 GMT')
 
     f = b.tf();
     var e1 = f % 9;

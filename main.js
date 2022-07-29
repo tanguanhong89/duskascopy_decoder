@@ -20,8 +20,7 @@ function send_HTTP_req(host, route) { //type = GET, POST
                 sss = sss.concat(chunk)
             });
             res.on('end', () => {
-                let rows = decodeBinary(sss);
-                re(rows);
+                re(sss);
             })
         })
         post_req.end();
@@ -31,10 +30,17 @@ function send_HTTP_req(host, route) { //type = GET, POST
 
 
 
-(async () => {
+(async () => {//size ratio bi5:csv, 3:10
     //13h(1pm) gmt time -> 9am US time
-    let results = await send_HTTP_req("datafeed.dukascopy.com", "datafeed/QQQUSUSD/2022/06/18/13h_ticks.bi5")
-    console.log(results[0])
+    let historicalFilename = "QQQUSUSD"
+    let year = "2022"
+    let month = "06"//00-11
+    let date = "18"
+    let hour = "13"//00-23, 13 means 9am US time
+    let binaryData = await send_HTTP_req("datafeed.dukascopy.com", "datafeed/" + historicalFilename + "/" + year + "/" + month + "/"
+        + date + "/" + hour + "h_ticks.bi5")
+    let rows = decodeBinary(binaryData, historicalFilename, year, month, date, hour);
+    console.log(rows[0])
 })();//for top level
 
 //"//datafeed.dukascopy.com/datafeed/QQQUSUSD/2022/06/18/13h_ticks.bi5"
