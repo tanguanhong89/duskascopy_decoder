@@ -20,7 +20,7 @@ function send_HTTP_req(host, route) { //type = GET, POST
                 sss = sss.concat(chunk)
             });
             res.on('end', () => {
-                re(sss);
+                re(Buffer.concat(sss));
             })
         })
         post_req.end();
@@ -35,11 +35,11 @@ function send_HTTP_req(host, route) { //type = GET, POST
     let historicalFilename = "QQQUSUSD"
     let year = "2022"
     let month = "06"//00-11
-    let date = "18"
+    let day = "18"
     let hour = "13"//00-23, 13 means 9am US time
     let binaryData = await send_HTTP_req("datafeed.dukascopy.com", "datafeed/" + historicalFilename + "/" + year + "/" + month + "/"
-        + date + "/" + hour + "h_ticks.bi5")
-    let rows = decodeBinary(binaryData, historicalFilename, year, month, date, hour);
+        + day + "/" + hour + "h_ticks.bi5")
+    let rows = decodeBinary(binaryData, historicalFilename, year, month, day, hour);
     console.log(rows[0])
 })();//for top level
 

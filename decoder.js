@@ -529,94 +529,6 @@ tM.prototype.decode = function (b, c, d) {
     return results
 }
 
-
-function send_HTTP_req(body, type, host, route) { //type = GET, POST   
-    return new Promise((re, rj) => {
-        let post_options = {
-            host: host,
-            port: 443,
-            path: '/' + route,
-            headers: {
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept': '*/*'
-            }
-        };
-
-        // Set up the request
-        let post_req = https.get(post_options, function (res) {
-            let sss = [];
-            //res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                //console.log('Response: ' + chunk);
-                sss = sss.concat(chunk)
-            });
-            res.on('end', () => {
-                let sss1 = Buffer.concat(sss);
-                t1 = new tM
-                t1.a = 0
-                t1.w = 0
-
-                b = new Eb
-                b.data = Array.from(sss1)
-                b.offset = 0
-
-                d = new tM;
-
-                f = b.tf();
-                var e1 = f % 9;
-                f = ~~(f / 9);
-                var k = f % 5
-                    , l = ~~(f / 5);
-                f = 1 << l;
-
-                if (8 < e1 || 4 < k || 4 < l)
-                    e1 = !1;
-                else {
-                    l = d.bb;
-                    if (!l.g || l.a !== e1 || l.j !== k)
-                        for (l.j = k,
-                            l.u = (1 << k) - 1,
-                            l.a = e1,
-                            l.g = [],
-                            e1 = 1 << l.a + l.j; e1--;)
-                            l.g[e1] = new rM;
-                    qM(d.Ka, f);
-                    qM(d.eb, f);
-                    d.Fd = f - 1;
-                    e1 = !0
-                }
-
-                e1 ? (e1 = b.tf(),
-                    e1 |= b.tf() << 8,
-                    e1 |= b.tf() << 16,
-                    e1 += 16777216 * b.tf(),
-                    0 > e1 ? e1 = !1 : (d.za !== e1 && (d.za = e1,
-                        d.Ha = Math.max(d.za, 1),
-                        e1 = d.u,
-                        k = Math.max(d.Ha, 4096),
-                        e1.u && e1.g === k || (e1.u = []),
-                        e1.g = k,
-                        e1.a = 0,
-                        e1.w = 0),
-                        e1 = !0)) : e1 = !1
-
-                e1 = b.tf();
-                e1 |= b.tf() << 8;
-                e1 |= b.tf() << 16;
-                e1 += 16777216 * b.tf();
-                b.tf();
-                b.tf();
-                b.tf();
-                b.tf();
-                c = new Eb
-                let rows = d.decode(b, c, e1);
-                re(rows);
-            })
-        })
-        post_req.end();
-    });
-}
-
 function decodeBinary(sss, historicalFilename, yyyy, mm, dd, hh) {
     let meta = JSON.parse(readFileSync("meta.json"))
     let instruments = meta.instruments
@@ -630,11 +542,8 @@ function decodeBinary(sss, historicalFilename, yyyy, mm, dd, hh) {
         }
     }
 
-
-    let sss1 = Buffer.concat(sss);
-
     b = new Eb
-    b.data = Array.from(sss1)
+    b.data = Array.from(sss)
     b.offset = 0
 
     d = new tM;
